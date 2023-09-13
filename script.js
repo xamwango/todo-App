@@ -1,63 +1,89 @@
-// Selecting DOM elements
-const todoForm = document.querySelector("#todoForm");
-const todoFormInput = document.querySelector(".todo-input");
-const todoItem = document.querySelector(".todo-item-container");
-const todoList = document.querySelector(".todo-list");
-const itemsRemaining = document.querySelector("#itemsRemaining");
+const todoApp = {
+  init() {
+    this.cacheDomElements();
+    this.calculateItemsRemaining();
+    this.listenForEvents();
+  },
+  // Selecting DOM elements
+  cacheDomElements() {
+    this.todoForm = document.querySelector("#todoForm");
+    this.todoFormInput = document.querySelector(".todo-input");
+    this.todoItem = document.querySelector(".todo-item-container");
+    this.todoList = document.querySelector(".todo-list");
+    this.itemsRemaining = document.querySelector("#itemsRemaining");
+  },
+  // calculate the number of uncompleted tasks in the list
+  calculateItemsRemaining() {
+    const todoItemlabels = document.querySelectorAll(".todo-item-label");
+    let count = 0;
 
-calculateItemsRemaining();
+    todoItemlabels.forEach((todoItemlabel) => {
+      if (!todoItemlabel.classList.contains("line-through")) {
+        count++;
+      }
+    });
 
-// Listening for events
-// adding new item in the todo list
-todoForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const newTodoItem = todoItem.cloneNode(true);
-  const todoItemlabel = newTodoItem.querySelector(".todo-item-label");
-
-  todoItemlabel.textContent = todoFormInput.value;
-  todoItemlabel.classList.remove("line-through");
-  newTodoItem.querySelector(".todo-check").checked = false;
-
-  if (todoFormInput.value !== "") {
-    todoList.append(newTodoItem);
-    calculateItemsRemaining();
-  } else {
-    todoFormInput.setAttribute(
-      "placeholder",
-      "Please enter a valid input"
+    this.itemsRemaining.textContent = count;
+  },
+  // Listening for events
+  listenForEvents() {
+    this.todoForm.addEventListener("submit", this.addTodo.bind(this));
+    this.todoList.addEventListener(
+      "click",
+      this.checkOrDeleteTodo.bind(this)
     );
-    return;
-  }
-  todoFormInput.setAttribute("placeholder", "What do you need to do?");
-  todoFormInput.value = "";
-});
+  },
+  // adding new item in the todo list
+  addTodo(event) {
+    event.preventDefault();
 
-todoList.addEventListener("click", () => {
-  // deleting items from the list
-  if (event.target.classList.contains("x-button")) {
-    const todoItemToDelete = event.target.closest(".todo-item-container");
+    const newTodoItem = this.todoItem.cloneNode(true);
+    const todoItemlabel = newTodoItem.querySelector(".todo-item-label");
+
+    todoItemlabel.textContent = this.todoFormInput.value;
+    todoItemlabel.classList.remove("line-through");
+    newTodoItem.querySelector(".todo-check").checked = false;
+
+    if (this.todoFormInput.value !== "") {
+      this.todoList.append(newTodoItem);
+      this.calculateItemsRemaining();
+    } else {
+      this.todoFormInput.setAttribute(
+        "placeholder",
+        "Please enter a valid input"
+      );
+      return;
+    }
+    this.todoFormInput.setAttribute(
+      "placeholder",
+      "What do you need to do?"
+    );
+    this.todoFormInput.value = "";
+  },
+  checkOrDeleteTodo(event) {
+    // deleting item/task from the list
+    if (event.target.classList.contains("x-button")) {
+      this.deleteTodo(event.target);
+    }
+    // checking a completed task/item
+    if (event.target.classList.contains("todo-check")) {
+      this.checkTodo(event.target);
+    }
+  },
+  // a method that deletes items from the list
+  deleteTodo(element) {
+    const todoItemToDelete = element.closest(".todo-item-container");
     todoItemToDelete.remove();
-    calculateItemsRemaining();
-  }
-  // check a completed task
-  if (event.target.classList.contains("todo-check")) {
-    event.target.nextElementSibling.classList.toggle("line-through");
-    calculateItemsRemaining();
+    this.calculateItemsRemaining();
+  },
+  // a method that checks completed items in the list
+  checkTodo(element) {
+    element.nextElementSibling.classList.toggle("line-through");
+    this.calculateItemsRemaining();
     // const itemToComplete = event.target.nextElementSibling;
     // itemToComplete.classList.toggle("line-through");
-  }
-});
-// counting the number of uncompleted tasks in the list
-function calculateItemsRemaining() {
-  const todoItemlabels = document.querySelectorAll(".todo-item-label");
-  let count = 0;
+  },
+};
 
-  todoItemlabels.forEach((todoItemlabel) => {
-    if (!todoItemlabel.classList.contains("line-through")) {
-      count++;
-    }
-  });
-
-  itemsRemaining.textContent = count;
-}
+//   initialize the todoApp
+todoApp.init();
