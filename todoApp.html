@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>todo App</title>
     <style>
+      * {
+        box-sizing: border-box;
+      }
+      .todo-app-container {
+        margin: auto;
+        margin-top: 40px;
+        max-width: 600px;
+        padding: 30px 100px;
+        border: 5px solid rgb(81, 81, 160);
+      }
       .todo-item-container {
         display: flex;
       }
@@ -14,10 +24,16 @@
         margin-right: 20px;
       }
       .x-button {
-        margin-left: 20px;
+        margin-left: 10px;
       }
       .line-through {
         text-decoration: line-through;
+      }
+      .todo-list {
+        margin: 0;
+        padding: 0;
+        margin-top: 30px;
+        margin-bottom: 30px;
       }
     </style>
     <script src="script.js" defer></script>
@@ -25,7 +41,7 @@
   <body>
     <div class="todo-app-container">
       <div class="todo-app">
-        <h2>Todo App</h2>
+        <h2 style="color: blue">Todo App</h2>
         <form action="#" id="todoForm">
           <input
             type="text"
@@ -37,13 +53,18 @@
           <li class="todo-item-container">
             <div class="todo-item">
               <input type="checkbox" class="todo-check" />
-              <span class="todo-item-label">Finish JavaScript Series</span>
+              <span class="todo-item-label" style="color: rgb(219, 8, 96)"
+                >Finish JavaScript Series</span
+              >
             </div>
-            <button class="x-button">&times;</button>
+            <small><button class="x-button">&times;</button></small>
           </li>
         </ul>
         <div class="remaining-container">
-          <span><span id="itemsRemaining">3</span> items remaining</span>
+          <span style="color: green"
+            ><strong><span id="itemsRemaining">3</span></strong>
+            <em>items remaining</em></span
+          >
         </div>
       </div>
     </div>
